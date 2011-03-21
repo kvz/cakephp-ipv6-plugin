@@ -13,11 +13,23 @@ MySQL does not support this, and I haven't found any
 involves compiling, making your app less portable.
 
 Then there are [several hacks](http://www.koopman.me/2008/04/storing-ipv6-ips-in-mysql/)
-possible. This plugin transparantly implements the 'best' one.
+possible.
+
+I finally decided to do a PHP implementation cause app servers scale better than
+dbs. I only use raw sql when it's strictly necessary, e.g. when doing full searches.
 
 ## Usage example
 
-
+    <?php
+    Class Ipv6Range extends IcingAppModel {
+        public $actsAs = array(
+            'Ipv6.Ipv6able' => array(
+                'fields' => array(
+                    'address',
+                ),
+            ),
+        );
+    }
 
 ## Thanks to
 
