@@ -122,7 +122,7 @@ class Ipv6ableBehavior extends ModelBehavior {
         $field_address = $this->opt($Model, 'field_address');
         $field_bits    = $this->opt($Model, 'field_bits');
         $field_size    = $this->opt($Model, 'field_size');
-        if (!empty($set[$field_address])) {
+        if (is_array($set) && array_key_exists($field_address, $set)) {
             if ($save) {
                 $set[$field_address] = $this->normalize_ipv6($set[$field_address]);
                 $set[$field_address] = $this->inet_ptod($set[$field_address]);
@@ -131,7 +131,7 @@ class Ipv6ableBehavior extends ModelBehavior {
                 #$set[$addressField] = $this->normalize_ipv6($set[$addressField]);
             }
         }
-        if (!empty($set[$field_bits])) {
+        if (is_array($set) && array_key_exists($field_bits, $set)) {
             if ($save) {
                 $set[$field_size] = bcpow(2, 128 - $set[$field_bits]);
             }
