@@ -24,12 +24,17 @@ dbs. I only use raw sql when it's strictly necessary, e.g. when doing full searc
     Class Ipv6Range extends IcingAppModel {
         public $actsAs = array(
             'Ipv6.Ipv6able' => array(
-                'fields' => array(
-                    'address',
-                ),
+                'field_address' => 'address',
+                'field_bits' => 'bits',
+                'field_size' => 'size',
             ),
         );
     }
+
+The `size` field will be automatically set whenever a user changes the `bits` field, 
+so you can hide it from the interface. But it's useful when you're trying to find
+to which range an IPv6 ip belongs.
+
 
 ## Thanks to
 

@@ -18,9 +18,9 @@ class Ipv6ableBehavior extends ModelBehavior {
     
     protected $_default = array(
         'error_handler' => 'php',
-        'fields' => array(
-            'address',
-        ),
+        'field_address' => 'address',
+        'field_bits' => 'bits',
+        'field_size' => 'size',
     );
 
     public function setup ($Model, $settings = array()) {
@@ -28,12 +28,7 @@ class Ipv6ableBehavior extends ModelBehavior {
             $this->_default,
             $settings
         );
-
-        if (is_string($this->settings[$Model->alias]['fields'])) {
-            $this->settings[$Model->alias]['fields'] = array($this->settings[$Model->alias]['fields']);
-        }
-
-
+        
         $this->rangeByIp($Model, '2001:990:0:1522::2');
     }
 
@@ -124,16 +119,21 @@ class Ipv6ableBehavior extends ModelBehavior {
     }
 
     protected function _changeSet ($Model, $save, &$set) {
-        $fields = $this->opt($Model, 'fields');
-        foreach ($fields as $field) {
-            if (!empty($set[$field])) {
-                if ($save) {
-                    $set[$field] = $this->normalize_ipv6($set[$field]);
-                    $set[$field] = $this->inet_ptod($set[$field]);
-                } else {
-                    $set[$field] = $this->inet_dtop($set[$field]);
-                    #$set[$addressField] = $this->normalize_ipv6($set[$addressField]);
-                }
+        $field_address = $this->opt($Model, 'field_address');
+        $field_bits    = $this->opt($Model, 'field_bits');
+        $field_size    = $this->opt($Model, 'field_size');
+        if (!empty($set[$field_address])) {
+            if ($save) {
+                $set[$field_address] = $this->normalize_ipv6($set[$field_address]);
+                $set[$field_address] = $this->inet_ptod($set[$field_address]);
+            } else {
+                $set[$field_address] = $this->inet_dtop($set[$field_address]);
+                #$set[$addressField] = $this->normalize_ipv6($set[$addressField]);
+            }
+        }
+        if (!empty($set[$field_bits])) {
+            if ($save) {
+                $set[$field_size] = bcpow(2, 128 - $set[$field_bits]);
             }
         }
     }
