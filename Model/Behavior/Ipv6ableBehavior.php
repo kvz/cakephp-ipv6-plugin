@@ -24,6 +24,15 @@ class Ipv6ableBehavior extends ModelBehavior {
 	public $settings = array();
 
 
+	/**
+	 * Give an IPv6 in presentational format, and this will returns the range record
+	 * it falls into
+	 *
+	 * @param object $Model
+	 * @param string $denormalized
+	 *
+	 * @return array
+	 */
 	public function rangeByIp ($Model, $denormalized) {
 		$ip_address = $this->normalize_ipv6($denormalized);
 		$decimal    = $this->inet_ptod($ip_address);
@@ -37,6 +46,15 @@ class Ipv6ableBehavior extends ModelBehavior {
 		return $res;
 	}
 
+	/**
+	 * This function modifies either the post data or or resultset.
+	 * When $save is true, conversion is towards decimals
+	 * When $save is false, conversion is towards presentational
+	 *
+	 * @param object  $Model
+	 * @param boolean $save
+	 * @param array   &$set
+	 */
 	protected function _changeSet ($Model, $save, &$set) {
 		$field_address = $this->opt($Model, 'field_address');
 		$field_bits    = $this->opt($Model, 'field_bits');
@@ -57,11 +75,27 @@ class Ipv6ableBehavior extends ModelBehavior {
 		}
 	}
 
+	/**
+	 * Calls _changeSet to modify post data
+	 *
+	 * @param object $Model
+	 *
+	 * @return boolean
+	 */
 	public function beforeSave ($Model) {
 		$this->_changeSet($Model, true, $Model->data[$Model->alias]);
 		return true;
 	}
 
+	/**
+	 * Calls _changeSet to modify resultsets
+	 *
+	 * @param object  $Model
+	 * @param array   $results
+	 * @param boolean $primary
+	 *
+	 * @return array
+	 */
 	public function afterFind ($Model, $results, $primary) {
 		foreach ($results as $i => $result) {
 			$this->_changeSet($Model, false, $results[$i][$Model->alias]);
@@ -187,7 +221,12 @@ class Ipv6ableBehavior extends ModelBehavior {
 		return join(':', $ip);
 	}
 
-
+	/**
+	 * Merges settings over default ones
+	 *
+	 * @param object $Model
+	 * @param array  $settings
+	 */
 	public function setup ($Model, $settings = array()) {
 		$this->settings[$Model->alias] = Set::merge(
 			$this->_default,
@@ -195,6 +234,17 @@ class Ipv6ableBehavior extends ModelBehavior {
 		);
 	}
 
+	/**
+	 * Error handler
+	 *
+	 * @param <type> $Model
+	 * @param <type> $format
+	 * @param <type> $arg1
+	 * @param <type> $arg2
+	 * @param <type> $arg3
+	 *
+	 * @return boolean
+	 */
 	public function err ($Model, $format, $arg1 = null, $arg2 = null, $arg3 = null) {
 		$arguments = func_get_args();
 		$Model     = array_shift($arguments);
@@ -218,6 +268,13 @@ class Ipv6ableBehavior extends ModelBehavior {
 		return false;
 	}
 
+	/**
+	 * Takes any variable and makes it human readable
+	 *
+	 * @param string $arguments
+	 *
+	 * @return string
+	 */
 	public function sensible ($arguments) {
 		if (is_object($arguments)) {
 			return get_class($arguments);
@@ -244,9 +301,15 @@ class Ipv6ableBehavior extends ModelBehavior {
 
 			$arr[] = $key . ': ' . $val;
 		}
+
 		return join(', ', $arr);
 	}
 
+	/**
+	 * Used to get and change settings
+	 *
+	 * @return mixed
+	 */
 	public function opt () {
 		$args  = func_get_args();
 
