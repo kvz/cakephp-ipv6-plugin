@@ -203,7 +203,10 @@ class Ipv6ableBehavior extends ModelBehavior {
 	 *
 	 * @return string IPv6 address
 	 */
-	public function normalize_ipv6 ($ip) {
+	public function normalize_ipv6 ($ip, $zeropad = true) {
+		if (!is_string($ip)) {
+			return $ip;
+		}
 		if (false !== strpos($ip, '::')) {
 			$ip = str_replace('::', str_repeat(':0', 8 - substr_count($ip, ':')) . ':', $ip);
 		}
@@ -214,8 +217,10 @@ class Ipv6ableBehavior extends ModelBehavior {
 
 		$ip = explode(':', $ip);
 
-		foreach ($ip as &$part) {
-			$part = str_pad($part, 4, '0', STR_PAD_LEFT);
+		if ($zeropad) {
+			foreach ($ip as &$part) {
+				$part = str_pad($part, 4, '0', STR_PAD_LEFT);
+			}
 		}
 
 		return join(':', $ip);
