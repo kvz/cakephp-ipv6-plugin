@@ -189,6 +189,49 @@ class Ipv6ableBehavior extends ModelBehavior {
 	}
 
 	/**
+	 * Takes an ipv6 address and converts it to DNS reverse nibble arpa format
+	 *
+	 * Taken from http://stackoverflow.com/a/6621473/151666
+	 *
+	 * @param type $ip
+	 *
+	 * @return string
+	 */
+	public static function toRevNibblesArpa ($ip, $zeropad = true) {
+		$addr   = inet_pton($ip);
+		$unpack = unpack('H*hex', $addr);
+		$hex    = $unpack['hex'];
+		$arpa   = join('.', array_reverse(str_split($hex))) . '.ip6.arpa';
+
+		if (!$zeropad) {
+			$arpa = trim($arpa, '0.');
+		}
+
+		return $arpa;
+	}
+
+//	/**
+//	 * Takes an ipv6 address and converts it to DNS reverse nibble arpa format
+//	 *
+//	 * Taken from http://stackoverflow.com/a/6621473/151666
+//	 *
+//	 * @param type $ip
+//	 *
+//	 * @return string
+//	 */
+//	public function fromRevNibblesArpa ($arpa) {
+//		$mainptr = substr($arpa, 0, strlen($arpa) - 9);
+//		$pieces = array_reverse(explode('.' , $mainptr));
+//		$hex = join('', $pieces);
+//		$ipbin = pack('xehH*', $hex);
+//		$ipv6addr = inet_ntop($ipbin);
+//
+//		pr(compact('arpa', 'mainptr', 'pieces', 'hex', 'ipbin', 'ipv6addr'));
+//
+//		return $ipv6addr;
+//	}
+
+	/**
 	 * Normalizes an IPv6 address to long notation.
 	 *
 	 * Examples:
