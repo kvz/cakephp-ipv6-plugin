@@ -1,4 +1,6 @@
 <?php
+App::uses('ModelBehavior', 'Model');
+
 /**
  * Plugin-wrapped behavior to work with IPv6 addresses with efficient MySQL storage
  *
@@ -204,7 +206,11 @@ class Ipv6ableBehavior extends ModelBehavior {
 		$arpa   = join('.', array_reverse(str_split($hex))) . '.ip6.arpa';
 
 		if (!$zeropad) {
-			$arpa = trim($arpa, '0.');
+			// Group into 4 bits
+			$padding = '0.0.0.0.';
+			while (strpos($arpa, $padding) === 0) {
+				$arpa = substr($arpa, strlen($padding));
+			}
 		}
 
 		return $arpa;
