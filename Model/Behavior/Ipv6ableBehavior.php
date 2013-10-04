@@ -84,7 +84,7 @@ class Ipv6ableBehavior extends ModelBehavior {
 	 *
 	 * @return boolean
 	 */
-	public function beforeSave ($Model) {
+	public function beforeSave (Model $Model) {
 		$this->_changeSet($Model, true, $Model->data[$Model->alias]);
 		return true;
 	}
@@ -98,7 +98,7 @@ class Ipv6ableBehavior extends ModelBehavior {
 	 *
 	 * @return array
 	 */
-	public function afterFind ($Model, $results, $primary) {
+	public function afterFind (Model $Model, $results, $primary) {
 		foreach ($results as $i => $result) {
 			$this->_changeSet($Model, false, $results[$i][$Model->alias]);
 		}
@@ -281,7 +281,7 @@ class Ipv6ableBehavior extends ModelBehavior {
 	 * @param object $Model
 	 * @param array  $settings
 	 */
-	public function setup ($Model, $settings = array()) {
+	public function setup (Model $Model, $settings = array()) {
 		$this->settings[$Model->alias] = Set::merge(
 			$this->_default,
 			$settings
