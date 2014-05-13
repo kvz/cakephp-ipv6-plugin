@@ -25,4 +25,14 @@ class Ipv6ableBehaviorTest extends CakeTestCase {
 		$expected = '0.0.2.0.0.0.0.0.8.a.9.0.1.0.0.2.ip6.arpa';
 		$this->assertEqual($result, $expected);
 	}
+
+	public function testFromRevNibblesArpa() {
+		$result = Ipv6ableBehavior::fromRevNibblesArpa('0.1.0.0.0.0.0.0.8.a.9.0.1.0.0.2.ip6.arpa');
+		$expected = '2001:9a8:0:10::';
+		$this->assertEqual($result, $expected);
+
+		$result = Ipv6ableBehavior::fromRevNibblesArpa('0.0.2.0.0.0.0.0.8.a.9.0.1.0.0.2.ip6.arpa');
+		$expected = '2001:9a8:0:200::';
+		$this->assertEqual($result, $expected);
+	}
 }
